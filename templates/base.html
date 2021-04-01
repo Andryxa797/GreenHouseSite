@@ -1,0 +1,39 @@
+<!doctype html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Home - GreenHouse</title>
+    <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat:400,700">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Kaushan+Script">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic,700italic">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto+Slab:400,100,300,700">
+    <link rel="stylesheet" href="{% static 'fonts/fontawesome-all.min.css' %}">
+    <link rel="stylesheet" href="{% static 'fonts/font-awesome.min.css' %}">
+    <link rel="stylesheet" href="{% static 'fonts/ionicons.min.css' %}">
+    <link rel="stylesheet" href="{% static 'fonts/fontawesome5-overrides.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/Footer-Basic.css' %}">
+    <link rel="stylesheet" href="{% static 'css/Login-Form-Clean.css' %}">
+    <link rel="stylesheet" href="{% static 'css/Registration-Form-with-Photo.css' %}">
+    <title>{% block title %}Моя теплица{% endblock %}</title>
+</head>
+
+<body>
+{% include 'inc/_nav.html' %}
+
+{% block content %}CONTENT{% endblock %}
+{% include 'inc/_pagination.html' %}
+{% include 'inc/_footer.html' %}
+
+
+<script src="{% static 'js/jquery.min.js' %}"></script>
+<script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
+<script src="{% static 'js/chart.min.js' %}"></script>
+<script src="{% static 'js/bs-init.js' %}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.min.js"></script>
+<script src="{% static 'js/agency.js' %}"></script>
+</body>
+</html>
+

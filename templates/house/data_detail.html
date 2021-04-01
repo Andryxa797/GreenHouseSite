@@ -1,0 +1,327 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load index %}
+{% block title %}
+    Главная
+{% endblock %}
+
+{% block content %}
+
+    {% if request.user.is_authenticated %}
+        <section id="portfolio" class="bg-light" xmlns="http://www.w3.org/1999/html">
+            <div class="container">
+                <div class="row">
+                    <div class="col-auto col-sm-auto col-md-auto col-lg-auto col-xl-4">
+                        <div>
+                            <h4 class="text-center" style="padding: 0px;">&nbsp;{{ OwnerFirstName|index:0 }}</h4>
+                            <img
+                                    class="rounded" height="200" width="100%"
+                                    src="{{ PathImg|index:0 }}" width="330" height="250" style="margin: 0px;"></div>
+                    </div>
+                    <div class="col">
+                        <h4 class="text-left">Последние данные</h4>
+                        <h4 class="text-left small font-weight-bold">Температура в теплице, в верхней части<span
+                                class="float-right">{{ Data.first.temp_greenhouse_upstairs }} C</span></h4>
+                        <h4 class="text-left small font-weight-bold">Температура в теплице, в нижней части<span
+                                class="float-right">{{ Data.first.temp_greenhouse_downstairs }} C</span></h4>
+                        <h4 class="text-left small font-weight-bold">Температура в теплице, в земле<span
+                                class="float-right">{{ Data.first.temp_greenhouse_in_ground }} C</span></h4>
+                        <h4 class="text-left small font-weight-bold">Температура на улице<span
+                                class="float-right">{{ Data.first.temp_street }} C</span></h4>
+                        <h4 class="text-left small font-weight-bold">Влажность в теплице<span
+                                class="float-right">{{ Data.first.humidity_greenhouse }}%</span></h4>
+                        <h4 class="text-left small font-weight-bold">Влажность в теплице, в земли<span
+                                class="float-right">{{ Data.first.humidity_greenhouse_in_ground }}%</span></h4>
+                        <h4 class="text-left small font-weight-bold">Поворот нижнего сервопривода<span
+                                class="float-right">{{ Data.first.servo_turn_upstairs }}</span></h4>
+                        <h4 class="text-left small font-weight-bold">Поворот верхнего сервопривода<span
+                                class="float-right">{{ Data.first.servo_turn_downstairs }}</span></h4>
+                        <h4 class="text-left small font-weight-bold">Первая нагрузка<span
+                                {% if  Data.first.conditions_load_one == True %}
+                                    class="float-right">Включена</span></h4>
+                                {% else %}
+                                    class="float-right">Выключена</span></h4>
+                                {% endif %}
+                        <h4 class="text-left small font-weight-bold">Вторая нагрузка<span
+
+                                {% if  Data.first.conditions_load_two == True %}
+                                    class="float-right">Включена</span></h4>
+                                {% else %}
+                                    class="float-right">Выключена</span></h4>
+                                {% endif %}
+                        <h4 class="text-left small font-weight-bold">Третья нагрузка<span
+                                {% if  Data.first.conditions_load_three == True %}
+                                    class="float-right">Включена</span></h4>
+                                {% else %}
+                                    class="float-right">Выключена</span></h4>
+                                {% endif %}
+                        </h4>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col align-self-center" style="padding: 0px;height: 89px;width: 1154px;">
+                        <div class="row">
+                            <div class="col">
+                                <a class="btn btn-primary btn-block" type="submit"
+                                   style="background: rgb(55,54,51);"
+                                   href="{% url 'data_detail_table'  OwnerUserName.0 'temp' %}"><strong>Таблица с
+                                    данными о
+                                    температуре</strong><br></a>
+                                <a class="btn btn-primary btn-block" type="submit"
+                                   style="background: rgb(55,54,51);"
+                                   href="{% url 'data_detail_table'  OwnerUserName.0 'humidity' %}"><strong>Таблица с
+                                    данными о
+                                    влажности</strong><br></a>
+                            </div>
+                            <div
+                                    class="col">
+                                <a class="btn btn-primary btn-block" type="submit"
+                                   style="background: rgb(55,54,51);"
+                                   href="{% url 'data_detail_table'  OwnerUserName.0 'servo' %}"><strong>Таблица с
+                                    данными о
+                                    вентиляции</strong><br></a>
+                                <a class="btn btn-primary btn-block" type="submit"
+                                   style="background: rgb(55,54,51);"
+                                   href="{% url 'data_detail_table'  OwnerUserName.0 'conditions' %}">Таблица с
+                                    состоянием&nbsp;нагрузок<br>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <div class="container">
+            <h1 class="text-center">Графики </h1>
+            <div class="row">
+                <div class="col-auto col-sm-auto col-md-auto col-lg-auto col-xl-6 m-auto">
+                    <div>
+                        <h4 class="text-center" style="padding: 0px;">Температура</h4>
+                        <div>
+                            <canvas id="CharTemperature"></canvas>
+                            <script>
+                                var temp_greenhouse_upstairs = {
+                                    label: "Сверху",
+                                    data: {{ temp_greenhouse_upstairs|safe }},
+                                    borderColor: 'orange',
+                                    fill: false,
+                                    backgroundColor: 'orange',
+                                    pointBackgroundColor: 'rgba(255,150,0,0.5)',
+                                };
+
+                                var temp_greenhouse_downstairs = {
+                                    label: "Снизу",
+                                    data: {{ temp_greenhouse_downstairs|safe }},
+                                    borderColor: 'green',
+                                    fill: false,
+                                    backgroundColor: 'green',
+                                    pointBackgroundColor: 'green',
+                                };
+
+                                var temp_greenhouse_in_ground = {
+                                    label: "В земле",
+                                    data: {{ temp_greenhouse_in_ground|safe }},
+                                    borderColor: 'blue',
+                                    fill: false,
+                                    backgroundColor: 'blue',
+                                    pointBackgroundColor: 'blue',
+                                };
+
+                                var temp_street = {
+                                    label: "На улице",
+                                    data: {{ temp_street|safe }},
+                                    borderColor: 'red',
+                                    fill: false,
+                                    backgroundColor: 'red',
+                                    pointBackgroundColor: 'red',
+                                };
+
+                                var DataTemperature = {
+                                    labels: {{ labels|safe }},
+                                    datasets: [temp_greenhouse_upstairs, temp_greenhouse_downstairs, temp_greenhouse_in_ground, temp_street]
+                                };
+
+                                var lineChartTemperature = {
+                                    type: 'line',
+                                    data: DataTemperature
+                                };
+                            </script>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-auto col-sm-auto col-md-auto col-lg-auto col-xl-6 m-auto">
+                    <div>
+                        <h4 class="text-center" style="padding: 0px;">Вентиляция</h4>
+                        <div>
+                            <canvas id="CharServo"></canvas>
+                            <script>
+                                var servo_turn_upstairs = {
+                                    label: "Сверху",
+                                    data: {{ servo_turn_upstairs|safe }},
+                                    borderColor: 'orange',
+                                    fill: false,
+                                    backgroundColor: 'orange',
+                                    pointBackgroundColor: 'rgba(255,150,0,0.5)',
+                                };
+                                var servo_turn_downstairs = {
+                                    label: "Снизу",
+                                    data: {{ servo_turn_downstairs|safe }},
+                                    borderColor: 'green',
+                                    fill: false,
+                                    backgroundColor: 'green',
+                                    pointBackgroundColor: 'green',
+                                };
+
+                                var DataServo = {
+                                    labels: {{ labels|safe }},
+                                    datasets: [servo_turn_upstairs, servo_turn_downstairs]
+                                };
+
+                                var lineChartServo = {
+                                    type: 'line',
+                                    data: DataServo
+                                };
+
+                            </script>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-auto col-sm-auto col-md-auto col-lg-auto col-xl-6 m-auto">
+                    <div>
+                        <h4 class="text-center" style="padding: 0px;">Влажность</h4>
+                        <div>
+                            <canvas id="CharHumidity"></canvas>
+                            <script>
+                                var humidity_greenhouse = {
+                                    label: "Влажность воздуха",
+                                    data: {{ humidity_greenhouse|safe }},
+                                    borderColor: 'orange',
+                                    fill: false,
+                                    backgroundColor: 'orange',
+                                };
+
+                                var humidity_greenhouse_in_ground = {
+                                    label: "Влажность земли",
+                                    data: {{ humidity_greenhouse_in_ground|safe }},
+                                    borderColor: 'green',
+                                    fill: false,
+                                    backgroundColor: 'green',
+                                    pointBackgroundColor: 'green',
+                                };
+
+                                var DataHumidity = {
+                                    labels: {{ labels|safe }},
+                                    datasets: [humidity_greenhouse, humidity_greenhouse_in_ground]
+                                };
+
+                                var lineChartHumidity = {
+                                    type: 'line',
+                                    data: DataHumidity
+                                };
+                            </script>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-auto col-sm-auto col-md-auto col-lg-auto col-xl-6 m-auto">
+                    <div>
+                        <h4 class="text-center" style="padding: 0px;">Состояние нагрузок</h4>
+                        <div>
+                            <canvas id="CharСonditions"></canvas>
+                            <script>
+                                var conditions_load_one = {
+                                    label: "Первоя",
+                                    data: {{ conditions_load_one|safe }},
+                                                 borderColor: 'orange',
+                                    fill: false,
+                                    backgroundColor: 'orange',
+                                };
+
+                                var conditions_load_two = {
+                                    label: "Вторая",
+                                    data: {{ conditions_load_two|safe }},
+                                    borderColor: 'green',
+                                    fill: false,
+                                    backgroundColor: 'green',
+                                    pointBackgroundColor: 'green',
+                                };
+                                var conditions_load_three = {
+                                    label: "Третья",
+                                    data: {{ conditions_load_three|safe }},
+                                    borderColor: 'blue',
+                                    fill: false,
+                                    backgroundColor: 'blue',
+                                    pointBackgroundColor: 'blue',
+                                };
+
+                                var DataConditions = {
+                                    labels: {{ labels|safe }},
+                                    datasets: [conditions_load_one, conditions_load_two, conditions_load_three]
+                                };
+
+                                var lineChartConditions = {
+                                    type: 'line',
+                                    data: DataConditions
+                                };
+                            </script>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script>
+            window.onload = function () {
+                var ctx1 = document.getElementById('CharTemperature').getContext('2d');
+                window.myCharTemperature = new Chart(ctx1, lineChartTemperature);
+                var ctx2 = document.getElementById('CharServo').getContext('2d');
+                window.myCharServo = new Chart(ctx2, lineChartServo);
+                var ctx3 = document.getElementById('CharHumidity').getContext('2d');
+                window.myCharHumidity = new Chart(ctx3, lineChartHumidity);
+                var ctx4 = document.getElementById('CharСonditions').getContext('2d');
+                window.myCharCondition = new Chart(ctx4, lineChartConditions);
+            };
+        </script>
+        <div class="container">
+            <h4 class="text-right">Количество отображаемых значений: </h4>
+            <div class="input-group">
+                <select class="custom-select" id="urlSelect"
+                        onchange="window.location = jQuery('#urlSelect option:selected').val();">
+                    <option value="1">Выбрать количество отображаемых значений</option>
+                    <option value="{% url 'data_detail'  OwnerUserName.0 5 %}">5</option>
+                    <option value="{% url 'data_detail'  OwnerUserName.0 10 %}">10</option>
+                    <option value="{% url 'data_detail'  OwnerUserName.0 20 %}">20</option>
+                    <option value="{% url 'data_detail'  OwnerUserName.0 30 %}">30</option>
+                    <option value="{% url 'data_detail'  OwnerUserName.0 40 %}">40</option>
+                    <option value="{% url 'data_detail'  OwnerUserName.0 50 %}">50</option>
+                    <option value="{% url 'data_detail'  OwnerUserName.0 60 %}">60</option>
+                    <option value="{% url 'data_detail'  OwnerUserName.0 70 %}">70</option>
+                    <option value="{% url 'data_detail'  OwnerUserName.0 80 %}">80</option>
+                    <option value="{% url 'data_detail'  OwnerUserName.0 90 %}">90</option>
+                    <option value="{% url 'data_detail'  OwnerUserName.0 100 %}">100</option>
+                    <option value="{% url 'data_detail'  OwnerUserName.0 125 %}">125</option>
+                    <option value="{% url 'data_detail'  OwnerUserName.0 150 %}">150</option>
+                </select>
+            </div>
+        </div>
+
+    {% else %}
+        <section id="portfolio" class="bg-light">
+            <div class="container">
+                <div class="row">
+                    <div class="col align-self-center" style="padding: 0px;height: 89px;width: 1154px;">
+                        <div class="row">
+                            <div class="col">
+                                <a class="btn btn-primary btn-block" style="background: rgb(55,54,51);"
+                                   href="{% url 'MyLogin' %}">Войти в
+                                    систему</a>
+                                <a type="button" class="btn btn-primary btn-block" style="background: rgb(55,54,51);"
+                                   href="{% url 'MyRegister' %}">Зарегистрироваться</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    {% endif %}
+{% endblock %}

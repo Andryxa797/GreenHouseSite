@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}
+    Главная
+{% endblock %}
+
+{% block content %}
+        <div class="container"></div>
+        <div class="login-clean" style="filter: hue-rotate(0deg);">
+            <form method="post">
+                {% csrf_token %}
+                <h2 class="sr-only">Login Form</h2>
+                <div class="illustration"><i class="icon ion-ios-navigate" style="color: rgb(55,54,51);"></i></div>
+                {{ form.as_p }}
+
+                <div class="form-group">
+                    <button class="btn btn-dark btn-block" type="submit" style="background: rgb(55,54,51);">Войти
+                    </button>
+                </div>
+            </form>
+        </div>
+
+{% endblock %}

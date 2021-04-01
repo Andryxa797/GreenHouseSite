@@ -1,0 +1,7 @@
+*.pyc
+*~
+__pycache__
+/.idea
+/media/media
+pyvenv.cfg
+.DS_Store

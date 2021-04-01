@@ -1,0 +1,10 @@
+<a class="list-group"></a>
+{% for item in owner_search %}
+    {% if item.owner_name == owner_name %}
+        <a href="{% url 'owner'  item.owner_name %}"
+           class="list-group-item list-group-item-action-success border-0 bg-success active">{{ item.owner_name }}</a>
+    {% else %}
+        <a href="{% url 'owner'  item.owner_name %}"
+           class="list-group-item list-group-item-action">{{ item.owner_name }}</a>
+    {% endif %}
+{% endfor %}

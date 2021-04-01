@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}
+    Главная
+{% endblock %}
+
+{% block content %}
+    {% if request.user.is_authenticated %}
+        <section id="portfolio" class="bg-light">
+            <div class="container align-content-center">
+                <div class="d-flex flex-column center-block" id="content-wrapper">
+                    <div id="content">
+                        <div class="container-fluid ">
+                            <h3 class="text-dark mb-4">Личный кабинет, Admin</h3>
+                            <div class="row mb-3">
+                                <div class="col-lg-4 " style="padding: 0px;width: 372px;">
+                                    <div class="card mb-3 ">
+                                        <div class="card-body text-center shadow">
+                                            <img class="rounded border mb-3 mt-4"
+                                                 src="{{ path_img }}"
+                                                 width="330" height="250"
+                                                 style="margin: 0px;">
+                                            <div class="mb-3">
+                                                <form method="post" enctype="multipart/form-data">
+                                                    {% csrf_token %}
+                                                    <div class="custom-file">
+                                                        <input type="file" accept="image/aces" name="image"
+                                                               class="custom-file-input"
+                                                               id="customFileLangHTML">
+                                                        <label class="custom-file-label" for="customFileLangHTML"
+                                                               data-browse="Выбрать"></label>
+                                                        <button class="btn btn-primary btn-block" name="UploadAvatar"
+                                                                type="submit"
+                                                                style="background: rgb(55,54,51);">
+                                                            <strong>Сохранить</strong><br></button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card shadow mb-4">
+                                        <div class="card-header py-3">
+                                            <h4 class="text-left">Система подписок</h4>
+                                        </div>
+                                        <div class="card-body">
+                                            <div>
+                                                <div class="row" style="padding: 9px;">
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <a href="{% url 'followers' %}" class="btn btn-primary btn-block" type="submit"
+                                                        style="background: rgb(55,54,51);">Управление
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-8">
+                                    <div class="row">
+                                        <div class="col">
+                                            <div class="card shadow mb-3">
+                                                <div class="card-header py-3">
+                                                    <h4 class="text-left">Настройки пользователя</h4>
+                                                </div>
+                                                <div class="card-body">
+                                                    <form method="post">
+                                                        {% csrf_token %}
+                                                        {{ user_setting_form.as_p }}
+                                                        <div class="form-group">
+                                                            <button class="btn btn-primary btn-block"
+                                                                    name="ButtonChangeUserSetting" type="submit"
+                                                                    style="background: rgb(55,54,51);"><strong>Сохранить
+                                                                изменения</strong><br></button>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                            <div class="card shadow">
+                                                <div class="card-header py-3">
+                                                    <h4 class="text-left">Контакты</h4>
+                                                </div>
+                                                <div class="card-body">
+                                                    <form method="post">
+                                                        {% csrf_token %}
+                                                        {{ user_contact_form.as_p }}
+                                                        <div class="form-group">
+                                                            <button class="btn btn-primary btn-block"
+                                                                    name="ButtonChangeContact" type="submit"
+                                                                    style="background: rgb(55,54,51);"><strong>Сохранить
+                                                                изменения</strong><br></button>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card shadow mb-5"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    {% else %}
+        <dev class="mx-auto w-100">
+            <div class="container">
+                <div class="row my-5 mx-n5">
+                    <a type="button" class="btn btn-success btn-lg btn-block mr-auto ml-3" href="{% url 'login' %}">Войти
+                        в
+                        систему</a>
+                    <a type="button" class="btn btn-success btn-lg btn-block mr-auto ml-3" href="{% url 'register' %}">Зарегистрироваться</a>
+                </div>
+            </div>
+        </dev>
+    {% endif %}
+{% endblock %}

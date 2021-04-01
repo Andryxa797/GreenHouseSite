@@ -1,0 +1,132 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load index %}
+{% block title %}
+    Главная
+{% endblock %}
+
+{% block content %}
+    {% if request.user.is_authenticated %}
+        <section id="portfolio" class="bg-light">
+            <div class="container">
+                {% if Category == 'temp' %}
+                    <table class="table">
+                        <thead class="thead-light">
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Температура в теплице, в верхней части</th>
+                            <th scope="col">Температура в теплице, в нижней части</th>
+                            <th scope="col">Температура в теплице, в земле</th>
+                            <th scope="col">Температура на улице</th>
+                            <th scope="col">Дата</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for item in data %}
+                            <tr>
+                                <th scope="row">{{ item.pk }}</th>
+                                <td>{{ item.temp_greenhouse_upstairs }}</td>
+                                <td>{{ item.temp_greenhouse_downstairs }}</td>
+                                <td>{{ item.temp_greenhouse_in_ground }}</td>
+                                <td>{{ item.temp_street }}</td>
+                                <td>{{ item.created_at }}</td>
+                            </tr>
+
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                {% endif %}
+                {% if Category == 'humidity' %}
+                    <table class="table">
+                        <thead class="thead-light">
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Влажность в теплице</th>
+                            <th scope="col">Влажность в теплице, в земли</th>
+                            <th scope="col">Дата</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for item in data %}
+                            <tr>
+                                <th scope="row">{{ item.pk }}</th>
+                                <td>{{ item.humidity_greenhouse }}</td>
+                                <td>{{ item.humidity_greenhouse_in_ground }}</td>
+                                <td>{{ item.created_at }}</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+
+                {% endif %}
+
+                {% if Category == 'servo' %}
+                    <table class="table">
+                        <thead class="thead-light">
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Поворот верхнего сервопривода</th>
+                            <th scope="col">Поворот нижнего сервопривода</th>
+                            <th scope="col">Дата</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for item in data %}
+                            <tr>
+                                <th scope="row">{{ item.pk }}</th>
+                                <td>{{ item.servo_turn_upstairs }}</td>
+                                <td>{{ item.servo_turn_downstairs }}</td>
+                                <td>{{ item.created_at }}</td>
+                            </tr>
+
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                {% endif %}
+                {% if Category == 'conditions' %}
+                    <table class="table">
+                        <thead class="thead-light">
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Первоя нагрузка</th>
+                            <th scope="col">Вторая нагрузка</th>
+                            <th scope="col">Третья нагрузка</th>
+                            <th scope="col">Дата</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for item in data %}
+                            <tr>
+                                <th scope="row">{{ item.pk }}</th>
+                                <td>{{ item.conditions_load_one }}</td>
+                                <td>{{ item.conditions_load_two }}</td>
+                                <td>{{ item.conditions_load_three }}</td>
+                                <td>{{ item.created_at }}</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+
+                {% endif %}
+            </div>
+        </section>
+    {% else %}
+        <section id="portfolio" class="bg-light">
+            <div class="container">
+                <div class="row">
+                    <div class="col align-self-center" style="padding: 0px;height: 89px;width: 1154px;">
+                        <div class="row">
+                            <div class="col">
+                                <a class="btn btn-primary btn-block" style="background: rgb(55,54,51);"
+                                   href="{% url 'MyLogin' %}">Войти в
+                                    систему</a>
+                                <a type="button" class="btn btn-primary btn-block" style="background: rgb(55,54,51);"
+                                   href="{% url 'MyRegister' %}">Зарегистрироваться</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    {% endif %}
+{% endblock %}

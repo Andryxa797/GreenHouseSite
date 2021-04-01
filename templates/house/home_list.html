@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load index %}
+{% block title %}
+    Главная
+{% endblock %}
+
+{% block content %}
+    {% if request.user.is_authenticated %}
+        <section id="portfolio" class="bg-light">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-12 text-center">
+                        <h2 class="text-uppercase section-heading">Теплицы</h2>
+                        <h3 class="section-subheading text-muted">Мы заботимся о вашем урожае.</h3>
+                    </div>
+                </div>
+                <div class="row">
+                    {% for item in range %}
+                        <div class="col-sm-6 col-md-4 portfolio-item">
+                            <a class="portfolio-link" href="{% url 'data_detail'  OwnerUserName|index:item '24'%}">
+                                <div class="portfolio-hover">
+                                    <div class="portfolio-hover-content"><i class="fa fa-folder-o fa-3x"></i></div>
+                                </div>
+                                <img class="rounded" height="200" width="100%" src="{{ PathImg|index:item }}"></a>
+                            <div class="portfolio-caption">
+                                <h4>{{ OwnerFirstName|index:item }}</h4>
+                                <p class="text-muted">г. Томск</p>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </section>
+    {% else %}
+        <section id="portfolio" class="bg-light">
+            <div class="container">
+                <div class="row">
+                    <div class="col align-self-center" style="padding: 0px;height: 89px;width: 1154px;">
+                        <div class="row">
+                            <div class="col">
+                                <a class="btn btn-primary btn-block" style="background: rgb(55,54,51);"
+                                   href="{% url 'MyLogin' %}">Войти в
+                                    систему</a>
+                                <a type="button" class="btn btn-primary btn-block" style="background: rgb(55,54,51);"
+                                   href="{% url 'MyRegister' %}">Зарегистрироваться</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    {% endif %}
+{% endblock %}

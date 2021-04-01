@@ -1,0 +1,226 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load index %}
+{% block title %}
+    Главная
+{% endblock %}
+
+{% block content %}
+    {% if request.user.is_authenticated %}
+        <section id="portfolio" class="bg-light">
+            {% if is_microcontroller == True %}
+                <div class="container">
+                    <div class="row">
+                        <div class="col-xl-6">
+                            <div class="card shadow mb-3">
+                                <div class="card-header py-3">
+                                    <h4 class="text-left">Присоединить</h4>
+                                </div>
+                                <div class="card-body">
+                                    <form method="post">
+                                        {% csrf_token %}
+                                        {{ agree_form.as_p }}
+                                        <div class="form-group">
+                                            <input name="AddSigner"
+                                                   class="btn btn-primary btn-block"
+                                                   type="submit"
+                                                   style="background: rgb(55,54,51);">
+                                            <strong>Добавить</strong><br>
+                                            </input>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-6">
+                            <div class="card shadow mb-3">
+                                <div class="card-header py-3">
+                                    <h4 class="text-left">Отписать</h4>
+                                </div>
+                                <div class="card-body">
+                                    <form method="post">
+                                        {% csrf_token %}
+                                        {{ disagree_form.as_p }}
+                                        <div class="form-group">
+                                            <input name="RemoveSigner"
+                                                   class="btn btn-primary btn-block"
+                                                   type="submit"
+                                                   style="background: rgb(55,54,51);">
+                                            <strong>Отписать</strong><br>
+                                            </input>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+            {% if is_microcontroller == False %}
+                <div class="container">
+                    <div class="row">
+                        <div class="col-xl-6">
+                            <div class="card shadow mb-3">
+                                <div class="card-header py-3">
+                                    <h4 class="text-left">Подписаться</h4>
+                                </div>
+                                <div class="card-body">
+                                    <form method="POST">
+                                        {% csrf_token %}
+                                        {{ new_singer_form.as_p }}
+                                        <div class="form-group">
+                                            <button class="btn btn-primary btn-block"
+                                                    name="AddOwner"
+                                                    type="submit"
+                                                    style="background: rgb(55,54,51);"><strong>Сделать
+                                                запрос</strong><br>
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-6">
+                            <div class="card shadow mb-3">
+                                <div class="card-header py-3">
+                                    <h4 class="text-left">Отписаться</h4>
+                                </div>
+                                <div class="card-body">
+                                    <form method="post">
+                                        {% csrf_token %}
+                                        {{ unsubscribe_form.as_p }}
+                                        <div class="form-group">
+                                            <button class="btn btn-primary btn-block"
+                                                    name="RemoveOwner"
+                                                    type="submit"
+                                                    style="background: rgb(55,54,51);">
+                                                <strong>Отписаться</strong><br>
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        </section>
+    {% else %}
+        <section id="portfolio" class="bg-light">
+            <div class="container">
+                <div class="row">
+                    <div class="col align-self-center" style="padding: 0px;height: 89px;width: 1154px;">
+                        <div class="row">
+                            <div class="col">
+                                <a class="btn btn-primary btn-block" style="background: rgb(55,54,51);"
+                                   href="{% url 'MyLogin' %}">Войти в
+                                    систему</a>
+                                <a type="button" class="btn btn-primary btn-block" style="background: rgb(55,54,51);"
+                                   href="{% url 'MyRegister' %}">Зарегистрироваться</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    {% endif %}
+{% endblock %}
+
+
+
+
+
+{#  {% extends 'base.html' %}#}
+{#{% load static %}#}
+{#{% load index %}#}
+{#{% block title %}#}
+{#    Главная#}
+{#{% endblock %}#}
+{##}
+{#{% block content %}#}
+{#    {% if request.user.is_authenticated %}#}
+{#   <section id="portfolio" class="bg-light">#}
+{#        <div class="container">#}
+{#            <div class="row">#}
+{#                <div class="col-lg-12 text-center" style="padding: 10px;width: 1100px;">#}
+{#                    <h2 class="text-uppercase section-heading">Поиск группы</h2>#}
+{#                </div>#}
+{#            </div>#}
+{#            <div class="row">#}
+{#                <div class="col-xl-10" style="padding: 10px;">#}
+{#                    <div class="input-group">#}
+{#                        <div class="input-group-prepend"><span class="input-group-text"></span></div><input class="form-control" type="text">#}
+{#                        <div class="input-group-append"></div>#}
+{#                    </div>#}
+{#                </div>#}
+{#                <div class="col">#}
+{#                    <div><button class="btn btn-primary btn-block" type="submit" style="background: rgb(55,54,51);">Поиск</button></div>#}
+{#                </div>#}
+{#            </div>#}
+{#            <div class="row">#}
+{#                <div class="col-10" style="padding: 10px;">#}
+{#                    <div><label>Лаборатория 005</label></div>#}
+{#                </div>#}
+{#                <div class="col" style="padding: 10px;">#}
+{#                    <div><button class="btn btn-primary btn-block" type="submit" style="background: rgb(55,54,51);">Сделать заявку</button></div>#}
+{#                </div>#}
+{#            </div>#}
+{#        </div>#}
+{#        <div class="container">#}
+{#            <div class="row">#}
+{#                <div class="col-lg-12 text-center" style="padding: 10px;width: 1100px;">#}
+{#                    <h2 class="text-uppercase section-heading">Ответит на запрос</h2>#}
+{#                </div>#}
+{#            </div>#}
+{#            {% for follower in followers%}#}
+{#            <div class="row">#}
+{#                <div class="col-8" style="padding: 10px;">#}
+{#                    <div><label>{{ follower.user }}</label></div>#}
+{#                </div>#}
+{#                <div class="col-2" style="padding: 10px;">#}
+{#                    <div><button class="btn btn-primary btn-block" type="submit" style="background: rgb(55,54,51);">Принять</button></div>#}
+{#                </div>#}
+{#                <div class="col-2" style="padding: 10px;">#}
+{#                    <div><button class="btn btn-primary btn-block" type="submit" style="background: rgb(55,54,51);">Отклонить</button></div>#}
+{#                </div>#}
+{#            </div>#}
+{#            {% endfor %}#}
+{#        </div>#}
+{#   <div class="container">#}
+{#            <div class="row">#}
+{#                <div class="col-lg-12 text-center" style="padding: 10px;width: 1100px;">#}
+{#                    <h2 class="text-uppercase section-heading">Мои подписчики</h2>#}
+{#                </div>#}
+{#            </div>#}
+{#            {% for follower in followers%}#}
+{#            <div class="row">#}
+{#                <div class="col-10" style="padding: 10px;">#}
+{#                    <div><label>{{ follower.user }}</label></div>#}
+{#                </div>#}
+{#                <div class="col-2" style="padding: 10px;">#}
+{#                    <div><button class="btn btn-primary btn-block" type="submit" style="background: rgb(55,54,51);">Удалить</button></div>#}
+{#                </div>#}
+{#            </div>#}
+{#            {% endfor %}#}
+{#        </div>#}
+{#    </section>#}
+{#    {% else %}#}
+{#        <section id="portfolio" class="bg-light">#}
+{#            <div class="container">#}
+{#                <div class="row">#}
+{#                    <div class="col align-self-center" style="padding: 0px;height: 89px;width: 1154px;">#}
+{#                        <div class="row">#}
+{#                            <div class="col">#}
+{#                                <a class="btn btn-primary btn-block" style="background: rgb(55,54,51);"#}
+{#                                   href="{% url 'MyLogin' %}">Войти в#}
+{#                                    систему</a>#}
+{#                                <a type="button" class="btn btn-primary btn-block" style="background: rgb(55,54,51);"#}
+{#                                   href="{% url 'MyRegister' %}">Зарегистрироваться</a>#}
+{#                            </div>#}
+{#                        </div>#}
+{#                    </div>#}
+{#                </div>#}
+{#            </div>#}
+{#        </section>#}
+{#    {% endif %}#}
+{#{% endblock %}#}
