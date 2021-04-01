@@ -1,10 +1,11 @@
 from django.urls import path, include
 from rest_framework.routers import SimpleRouter
 from house.views import DataHouseViewSet, HomeView, DataView, DataTableView, user_login, user_logout, \
-    user_register, lk_view, followers_view
+    user_register, lk_view, followers_view, OwnerViewSet
 
 router = SimpleRouter()
-router.register(r'api-data', DataHouseViewSet)
+router.register(r'api-owner', OwnerViewSet)
+router.register(r'api-data/(?P<owner>[^/.]+)', DataHouseViewSet)
 
 urlpatterns = [
     path('login/', user_login, name='MyLogin'),

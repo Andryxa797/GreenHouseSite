@@ -2,3 +2,4 @@ Django
 djangorestframework
 Pillow
 djoser
+django-crispy-forms

@@ -4,19 +4,49 @@ from django.shortcuts import render, redirect
 from django.views.generic import ListView, DetailView
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.viewsets import ModelViewSet
 
 from house.forms import UserLoginForm, UserRegisterForm, UserSetting, UserContact, NewSignerAgreeForm, NewSignerForm
 from house.models import DataHouse, Signer, Profile
-from house.serializers import DataHouseSerializer
+from house.permissions import ReadOnly, IsOwnerOrReadOnlyForAuthenticated
+from house.serializers import DataHouseSerializer, OwnerSerializer
 
 
 class DataHouseViewSet(viewsets.ModelViewSet):
     queryset = DataHouse.objects.get_queryset().order_by('id')
     serializer_class = DataHouseSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsOwnerOrReadOnlyForAuthenticated]
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
+
+    def get_queryset(self):
+        if self.request.user.is_authenticated:
+            owner_search = Signer.objects.filter(user=self.request.user, published=True)
+            owner = []
+            for item in owner_search:
+                owner.append(item.owner_name)
+                try:
+                    if str(item.owner_name) == self.kwargs['owner']:
+                        print(self.kwargs['owner'])
+                        return DataHouse.objects.filter(owner__username=self.kwargs['owner'])
+                except:
+                    return DataHouse.objects.none()
+        else:
+            return DataHouse.objects.none()
+
+
+class OwnerViewSet(ModelViewSet):
+    queryset = Signer.objects.all()
+    serializer_class = OwnerSerializer
+    permission_classes = [ReadOnly]
+
+    def perform_create(self, serializer):
+        serializer.save(owner=self.request.user)
+
+    def get_queryset(self):
+        owner_name = Signer.objects.filter(user=self.request.user, published=True)
+        return owner_name
 
 
 class HomeView(ListView):
