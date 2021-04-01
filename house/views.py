@@ -40,7 +40,6 @@ class OwnerViewSet(ModelViewSet):
     queryset = Signer.objects.all()
     serializer_class = OwnerSerializer
     permission_classes = [ReadOnly]
-
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
 
