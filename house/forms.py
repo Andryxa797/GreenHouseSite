@@ -74,7 +74,7 @@ class UserContact(UserCreationForm):
         del self.fields['password2']
 
 
-class NewSignerForm(forms.ModelForm):
+class SignerDisagreeForm(forms.ModelForm):
     class Meta:
         model = Signer
         fields = ['owner_name']
@@ -83,13 +83,41 @@ class NewSignerForm(forms.ModelForm):
         }
 
 
-class NewSignerAgreeForm(forms.ModelForm):
+class SignerAgreeForm(forms.ModelForm):
+    class Meta:
+        model = Signer
+        fields = ['owner_name']
+        widgets = {
+            'owner_name': forms.Select(attrs={"class": "form-control", "rows": 5}),
+        }
+
+
+class OwnerAgreeForm(forms.ModelForm):
     class Meta:
         model = Signer
         fields = ['user']
         widgets = {
             'user': forms.Select(attrs={"class": "form-control", "rows": 5}),
         }
+
+    # def __init__(self, user, *args, **kwargs):
+    #     super(SignerDisagreeForm, self).__init__(*args, **kwargs)
+    #     self.fields['owner_name'].queryset = Signer.objects.filter(user=user,
+    #                                                                owner_name__profile__user_is_microcontroller=True).values_list(
+    #         'owner_name__username', flat=True)
+
+    # def __init__(self, *args, **kwargs):
+    #     super(SignerDisagreeForm, self).__init__(*args, **kwargs)
+    #     self.fields['owner_name'].queryset = Signer.objects.filter(
+    #         owner_name__profile__user_is_microcontroller=True).values_list(
+    #         'owner_name__username', flat=True)
+
+    # def save(self, commit=True):
+    #     self.instance.user = self.request.user
+    #     return super().save(commit=commit)
+
+    # def __str__(self):
+    #     return self.owner_name
 
 # def get_form_kwargs(self):
 #     kwargs = super(NewSignerForm, self).get_form_kwargs()

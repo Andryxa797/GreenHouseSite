@@ -6,7 +6,8 @@ from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import ModelViewSet
 
-from house.forms import UserLoginForm, UserRegisterForm, UserSetting, UserContact, NewSignerAgreeForm, NewSignerForm
+from house.forms import UserLoginForm, UserRegisterForm, UserSetting, UserContact, \
+    SignerDisagreeForm, SignerAgreeForm, OwnerAgreeForm
 from house.models import DataHouse, Signer, Profile
 from house.permissions import ReadOnly, IsOwnerOrReadOnlyForAuthenticated
 from house.serializers import DataHouseSerializer, OwnerSerializer
@@ -28,7 +29,6 @@ class DataHouseViewSet(viewsets.ModelViewSet):
                 owner.append(item.owner_name)
                 try:
                     if str(item.owner_name) == self.kwargs['owner']:
-                        print(self.kwargs['owner'])
                         return DataHouse.objects.filter(owner__username=self.kwargs['owner'])
                 except:
                     return DataHouse.objects.none()
@@ -40,6 +40,7 @@ class OwnerViewSet(ModelViewSet):
     queryset = Signer.objects.all()
     serializer_class = OwnerSerializer
     permission_classes = [ReadOnly]
+
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
 
@@ -223,18 +224,19 @@ def followers_view(request):
         if request.user.is_authenticated:
             user = User.objects.get(pk=request.user.pk)
             if user.profile.user_is_microcontroller is True:
-                owner_answer_add = Signer(owner_name=request.user, published=True, on_check=True)
-                owner_answer_add = NewSignerAgreeForm(request.POST, instance=owner_answer_add)
+                owner_answer_add = Signer(owner_name=request.user)
+                owner_answer_add = OwnerAgreeForm(request.POST, instance=owner_answer_add)
+                print(owner_answer_add.is_valid())
                 if owner_answer_add.is_valid():
-                    print('valid')
-                    owner_answer_add.save()
-                    return redirect('lk')
-                return redirect('lk')
+                    user_name = request.POST.__getitem__("user")
+                    Signer.objects.filter(owner_name=request.user, user=user_name).update(published=True, on_check=True)
+                    return redirect('followers')
+                return redirect('followers')
     if request.method == 'POST' and 'RemoveSigner' in request.POST:
         if request.user.is_authenticated:
             user = User.objects.get(pk=request.user.pk)
             if user.profile.user_is_microcontroller is True:
-                owner_answer_remove = NewSignerAgreeForm(request.POST)
+                owner_answer_remove = OwnerAgreeForm(request.POST)
                 if owner_answer_remove.is_valid():
                     obj = Signer.objects.filter(owner_name=request.user, user=owner_answer_remove.cleaned_data['user'])
                     obj.delete()
@@ -244,9 +246,8 @@ def followers_view(request):
         if request.user.is_authenticated:
             user = User.objects.get(pk=request.user.pk)
             if user.profile.user_is_microcontroller is False:
-                user_name = Signer(user=request.user)
-                add_owner = NewSignerAgreeForm(request.POST, instance=user_name)
-                print(add_owner.is_valid())
+                add_owner = Signer(user=request.user)
+                add_owner = SignerAgreeForm(request.POST, instance=add_owner)
                 if add_owner.is_valid():
                     add_owner.save()
                     return redirect('followers')
@@ -255,10 +256,12 @@ def followers_view(request):
         if request.user.is_authenticated:
             user = User.objects.get(pk=request.user.pk)
             if user.profile.user_is_microcontroller is False:
-                remove_owner = NewSignerForm(request.POST)
+                owner = User.objects.get(username=request.POST.__getitem__("owner_name")).pk
+                remove_owner = SignerDisagreeForm(data={"owner_name": owner})
                 print(remove_owner.is_valid())
+                print(remove_owner.errors)
                 if remove_owner.is_valid():
-                    obj = Signer.objects.filter(owner_name=request.user, user=remove_owner.cleaned_data['owner_name'])
+                    obj = Signer.objects.filter(owner_name=remove_owner.cleaned_data['owner_name'], user=request.user)
                     obj.delete()
                     return redirect('followers')
                 return redirect('followers')
@@ -269,26 +272,27 @@ def followers_view(request):
             user = User.objects.get(pk=request.user.pk)
             if user.profile.user_is_microcontroller is True:
                 is_microcontroller = True
-                agree_form = NewSignerAgreeForm()
-                signer = Signer.objects.filter(owner_name=request.user, published=True)
+                agree_form = OwnerAgreeForm()
+                # signer = Signer.objects.filter(owner_name=request.user, published=True)
                 agree_form.fields['user'].queryset = User.objects.filter(user__owner_name=request.user,
+                                                                         user__published=False,
                                                                          user__on_check=False)
-                disagree_form = NewSignerAgreeForm()
+                disagree_form = OwnerAgreeForm()
                 disagree_form.fields['user'].queryset = User.objects.filter(user__owner_name=request.user,
                                                                             user__on_check=True,
                                                                             user__published=True)
                 return render(request, 'house/followers.html',
-                              {'agree_form': agree_form, 'disagree_form': disagree_form, 'signer': signer,
+                              {'agree_form': agree_form, 'disagree_form': disagree_form,# 'signer': signer,
                                'is_microcontroller': is_microcontroller})
 
             if user.profile.user_is_microcontroller is False:
-                new_singer_form = NewSignerForm()
-                new_singer_form.fields['owner_name'].queryset = Profile.objects.filter(
-                    user_is_microcontroller=True).values_list('user__username', flat=True)
-                unsubscribe_form = NewSignerForm()
-                unsubscribe_form.fields['owner_name'].queryset = Signer.objects.filter(user=request.user).values_list(
+                new_singer_agree_form = SignerAgreeForm()
+                new_singer_agree_form.fields['owner_name'].queryset = User.objects.filter(profile__user_is_microcontroller=True)
+                unsubscribe_form = SignerDisagreeForm()
+                unsubscribe_form.fields['owner_name'].queryset = Signer.objects.filter(user=user,
+                                                                                       owner_name__profile__user_is_microcontroller=True).values_list(
                     'owner_name__username', flat=True)
-                return render(request, 'house/followers.html', {'new_singer_form': new_singer_form,
+                return render(request, 'house/followers.html', {'new_singer_form': new_singer_agree_form,
                                                                 'unsubscribe_form': unsubscribe_form,
                                                                 'is_microcontroller': is_microcontroller, })
 

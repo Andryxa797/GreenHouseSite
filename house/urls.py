@@ -11,7 +11,6 @@ urlpatterns = [
     path('login/', user_login, name='MyLogin'),
     path('logout/', user_logout, name='MyLogout'),
     path('register/', user_register, name='MyRegister'),
-
     path("", HomeView.as_view(), name='home'),
     path("data/<slug:owner_name>/<int:count_value_chart>/", DataView.as_view(), name='data_detail'),
     path("data/<slug:owner_name>/table/<slug:category>/", DataTableView.as_view(), name='data_detail_table'),
