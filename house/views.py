@@ -27,11 +27,11 @@ class DataHouseViewSet(viewsets.ModelViewSet):
             owner = []
             for item in owner_search:
                 owner.append(item.owner_name)
-                try:
-                    if str(item.owner_name) == self.kwargs['owner']:
+                if str(item.owner_name) == self.kwargs['owner']:
+                    try:
                         return DataHouse.objects.filter(owner__username=self.kwargs['owner'])
-                except:
-                    return DataHouse.objects.none()
+                    except:
+                        return DataHouse.objects.none()
         else:
             return DataHouse.objects.none()
 
@@ -273,7 +273,6 @@ def followers_view(request):
             if user.profile.user_is_microcontroller is True:
                 is_microcontroller = True
                 agree_form = OwnerAgreeForm()
-                # signer = Signer.objects.filter(owner_name=request.user, published=True)
                 agree_form.fields['user'].queryset = User.objects.filter(user__owner_name=request.user,
                                                                          user__published=False,
                                                                          user__on_check=False)
@@ -282,12 +281,13 @@ def followers_view(request):
                                                                             user__on_check=True,
                                                                             user__published=True)
                 return render(request, 'house/followers.html',
-                              {'agree_form': agree_form, 'disagree_form': disagree_form,# 'signer': signer,
+                              {'agree_form': agree_form, 'disagree_form': disagree_form,  # 'signer': signer,
                                'is_microcontroller': is_microcontroller})
 
             if user.profile.user_is_microcontroller is False:
                 new_singer_agree_form = SignerAgreeForm()
-                new_singer_agree_form.fields['owner_name'].queryset = User.objects.filter(profile__user_is_microcontroller=True)
+                new_singer_agree_form.fields['owner_name'].queryset = User.objects.filter(
+                    profile__user_is_microcontroller=True)
                 unsubscribe_form = SignerDisagreeForm()
                 unsubscribe_form.fields['owner_name'].queryset = Signer.objects.filter(user=user,
                                                                                        owner_name__profile__user_is_microcontroller=True).values_list(
